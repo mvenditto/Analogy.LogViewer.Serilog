@@ -14,14 +14,23 @@ namespace Analogy.LogViewer.Serilog
     public partial class SerilogUCSettings : UserControl
     {
         private SerilogSettings Settings => UserSettingsManager.UserSettings.Settings;
+        private IReadOnlyCollection<TimeZoneInfo> _systemTimeZones;
+        
         public SerilogUCSettings()
         {
             InitializeComponent();
+            LoadSystemTimeZones();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveSettings();
+        }
+
+        private void LoadSystemTimeZones()
+        {
+            _systemTimeZones =  TimeZoneInfo.GetSystemTimeZones();
+            timeZoneComboBox.DataSource = _systemTimeZones;
         }
         public void SaveSettings()
         {
@@ -38,6 +47,7 @@ namespace Analogy.LogViewer.Serilog
             Settings.Format = rbtnCLEF.Checked
                 ? SerilogFileFormat.CLEF
                 : (rbRegexFile.Checked ? SerilogFileFormat.REGEX : SerilogFileFormat.JSON);
+            Settings.UserTimeZone = ((TimeZoneInfo)timeZoneComboBox.SelectedItem).Id;
             UserSettingsManager.UserSettings.Save();
         }
 
@@ -101,6 +111,14 @@ namespace Analogy.LogViewer.Serilog
             rbtnCLEF.Checked = logSettings.Format == SerilogFileFormat.CLEF;
             rbRegexFile.Checked = logSettings.Format == SerilogFileFormat.REGEX;
             rbJson.Checked = logSettings.Format == SerilogFileFormat.JSON;
+            try
+            {
+                timeZoneComboBox.SelectedItem = TimeZoneInfo.FindSystemTimeZoneById(logSettings.UserTimeZone);
+            }
+            catch(Exception ex)
+            {
+                timeZoneComboBox.SelectedItem = null;
+            }
         }
 
         private void btnOpenFolder_Click(object sender, EventArgs e)

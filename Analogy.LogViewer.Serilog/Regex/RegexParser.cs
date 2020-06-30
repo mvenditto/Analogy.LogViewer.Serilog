@@ -18,6 +18,7 @@ namespace Analogy.LogViewer.Serilog.Regex
         private List<RegexPattern> _logPatterns;
         private readonly bool updateUIAfterEachParsedLine;
         private IAnalogyLogger Logger { get; }
+        public static TimeZoneInfo TimeStampTimeZone { get; set; } = null;
 
         private IEnumerable<RegexPattern> LogPatterns
         {
@@ -82,7 +83,7 @@ namespace Analogy.LogViewer.Serilog.Regex
                                     DateTime.TryParseExact(value, regex.DateTimeFormat, CultureInfo.InvariantCulture,
                                         DateTimeStyles.None, out var date))
                                 {
-                                    m.Date = date;
+                                    m.Date = TimeStampTimeZone == null ? date : TimeZoneInfo.ConvertTimeToUtc(date);
                                 }
 
                                 continue;

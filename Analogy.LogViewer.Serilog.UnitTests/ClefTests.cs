@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,6 +54,38 @@ namespace Analogy.LogViewer.Serilog.UnitTests
             Assert.IsNotNull(secondEvent.Category);
             Assert.IsNotNull(secondEvent.User);
             Assert.IsNotNull(secondEvent.MethodName);
+        }
+
+        // Test the timstamp timezone adjustment
+        [TestMethod]
+        public async Task TimeStampTimeZoneAdjustmentTest()
+        {
+            ClefParser pNormal = new ClefParser();
+
+            ClefParser pAdjust = new ClefParser
+            {
+                TimeStampTimeZone = TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time")
+            };
+
+            CancellationTokenSource cts = new CancellationTokenSource();
+            string fileName = @"ClefExample1.clef";
+            MessageHandlerForTesting forTesting = new MessageHandlerForTesting();
+
+            var messages = (await pAdjust.Process(fileName, cts.Token, forTesting)).ToList();
+            Assert.IsTrue(messages.Count() == 4);
+            var msgAdjust = messages.ElementAt(0);
+
+            var messages2 = (await pNormal.Process(fileName, cts.Token, forTesting)).ToList();
+            Assert.IsTrue(messages2.Count() == 4);
+            var msgOrig = messages2.ElementAt(0);
+
+            var msgAdjustDate = msgAdjust.Date.ToUniversalTime();
+            var expectedDate = TimeZoneInfo
+                .ConvertTimeFromUtc(msgOrig.Date, pAdjust.TimeStampTimeZone)
+                .ToUniversalTime();
+
+            Assert.IsTrue(msgAdjustDate == expectedDate);
+
         }
     }
 }
