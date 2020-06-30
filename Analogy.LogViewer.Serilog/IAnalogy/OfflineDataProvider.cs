@@ -42,6 +42,7 @@ namespace Analogy.LogViewer.Serilog.IAnalogy
             JsonParser=new JsonParser();
             RegexParser = new RegexParser(UserSettingsManager.UserSettings.Settings.RegexPatterns, false,
                 LogManager.Instance);
+            CommonParser.PropertyColumnMappings = UserSettingsManager.UserSettings.Settings.PropertyColumnMappings;
 
         }
         public async Task<IEnumerable<AnalogyLogMessage>> Process(string fileName, CancellationToken token, ILogMessageCreatedHandler messagesHandler)

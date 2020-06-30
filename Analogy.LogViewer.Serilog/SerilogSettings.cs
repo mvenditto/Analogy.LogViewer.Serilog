@@ -16,6 +16,7 @@ namespace Analogy.LogViewer.Serilog
         public List<string> SupportFormats { get; set; }
         public List<RegexPattern> RegexPatterns { get; set; }
         public string Directory { get; set; }
+        public IDictionary<string,string> PropertyColumnMappings { get; set; }
         public SerilogFileFormat Format { get; set; }
 
         public SerilogSettings()
@@ -26,11 +27,7 @@ namespace Analogy.LogViewer.Serilog
             SupportFormats = new List<string> { "*.Clef", "*.log" };
             RegexPatterns = new List<RegexPattern>();
             RegexPatterns.Add(new RegexPattern(@"\$(?<Date>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2},\d{3})+\|+(?<Thread>\d+)+\|(?<Level>\w+)+\|+(?<Source>.*)\|(?<Text>.*)", "yyyy-MM-dd HH:mm:ss,fff", ""));
-
+            PropertyColumnMappings = null;
         }
-
-
-
-
     }
 }

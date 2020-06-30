@@ -1,4 +1,5 @@
-﻿using Analogy.Interfaces;
+﻿using System.Collections.Generic;
+using Analogy.Interfaces;
 using Analogy.LogViewer.Serilog.Managers;
 using Serilog.Events;
 
@@ -6,6 +7,7 @@ namespace Analogy.LogViewer.Serilog
 {
     public static class CommonParser
     {
+        public static IDictionary<string,string> PropertyColumnMappings { get; set; }
 
         public static AnalogyLogMessage ParseLogEventProperties(LogEvent evt)
         {
@@ -40,7 +42,12 @@ namespace Analogy.LogViewer.Serilog
 
             m.Date = evt.Timestamp.DateTime;
             m.Text = AnalogySink.output;
-            if (evt.Properties.TryGetValue(Constants.ProcessName, out var processName))
+
+            var mapping = PropertyColumnMappings == null
+                ? Constants.DefaultMappings
+                : PropertyColumnMappings;
+
+            if (evt.Properties.TryGetValue(mapping[Constants.ProcessName], out var processName))
             {
                 if (processName is ScalarValue scalarValue &&
                     scalarValue.Value is string processNameString)
@@ -49,7 +56,7 @@ namespace Analogy.LogViewer.Serilog
                 }
             }
 
-            if (evt.Properties.TryGetValue(Constants.Source, out var sourceContext))
+            if (evt.Properties.TryGetValue(mapping[Constants.Source], out var sourceContext))
             {
                 if (sourceContext is ScalarValue scalarValue && scalarValue.Value is string sourceContextString)
                 {
@@ -61,7 +68,7 @@ namespace Analogy.LogViewer.Serilog
                 }
             }
 
-            if (evt.Properties.TryGetValue(Constants.ThreadId, out var threadId))
+            if (evt.Properties.TryGetValue(mapping[Constants.ThreadId], out var threadId))
             {
                 if (threadId is ScalarValue scalarValue)
                 {
@@ -75,7 +82,7 @@ namespace Analogy.LogViewer.Serilog
                     }
                 }
             }
-            if (evt.Properties.TryGetValue(Constants.ProcessId, out var processId))
+            if (evt.Properties.TryGetValue(mapping[Constants.ProcessId], out var processId))
             {
                 if (processId is ScalarValue scalarValue)
                 {
@@ -89,7 +96,7 @@ namespace Analogy.LogViewer.Serilog
                     }
                 }
             }
-            if (evt.Properties.TryGetValue(Constants.MachineName, out var machineName))
+            if (evt.Properties.TryGetValue(mapping[Constants.MachineName], out var machineName))
             {
                 if (machineName is ScalarValue scalarValue &&
                     scalarValue.Value is string machineNameString)
@@ -97,7 +104,7 @@ namespace Analogy.LogViewer.Serilog
                     m.MachineName = machineNameString;
                 }
             }
-            if (evt.Properties.TryGetValue(Constants.EnvironmentUserName, out var environmentUserName))
+            if (evt.Properties.TryGetValue(mapping[Constants.EnvironmentUserName], out var environmentUserName))
             {
                 if (environmentUserName is ScalarValue scalarValue &&
                     scalarValue.Value is string environmentUserNameString)
