@@ -12,6 +12,8 @@ namespace Analogy.LogViewer.Serilog
 {
     public class ClefParser
     {
+        public TimeZoneInfo TimeStampTimeZone { get; set; } = null;
+
         public async Task<IEnumerable<AnalogyLogMessage>> Process(string fileName, CancellationToken token, ILogMessageCreatedHandler messagesHandler)
         {
             var messages = await Task<IEnumerable<AnalogyLogMessage>>.Factory.StartNew(() =>
@@ -31,6 +33,10 @@ namespace Analogy.LogViewer.Serilog
                             {
                                 analogy.Write(evt);
                                 AnalogyLogMessage m = CommonParser.ParseLogEventProperties(evt);
+                                if (TimeStampTimeZone != null)
+                                {
+                                    m.Date = TimeZoneInfo.ConvertTimeFromUtc(m.Date, TimeStampTimeZone);
+                                }
                                 parsedMessages.Add(m);
                             }
 

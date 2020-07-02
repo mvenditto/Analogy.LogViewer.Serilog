@@ -18,6 +18,8 @@ namespace Analogy.LogViewer.Serilog
     public class JsonParser
     {
         public static ITextFormatter textFormatter;
+        public TimeZoneInfo TimeStampTimeZone { get; set; } = null;
+
         public async Task<IEnumerable<AnalogyLogMessage>> Process(string fileName, CancellationToken token, ILogMessageCreatedHandler messagesHandler)
         {
             var messages = await Task<IEnumerable<AnalogyLogMessage>>.Factory.StartNew(() =>
@@ -50,6 +52,14 @@ namespace Analogy.LogViewer.Serilog
                                     }
                                 }
                             }
+                        }
+                    }
+
+                    if (TimeStampTimeZone != null)
+                    {
+                        foreach (var m in parsedMessages)
+                        {
+                            m.Date = TimeZoneInfo.ConvertTimeFromUtc(m.Date, TimeStampTimeZone);
                         }
                     }
 

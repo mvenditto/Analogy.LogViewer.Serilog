@@ -36,6 +36,7 @@ namespace Analogy.LogViewer.Serilog.IAnalogy
 
         public (Color backgroundColor, Color foregroundColor) GetColorForMessage(IAnalogyLogMessage logMessage)
             => (Color.Empty, Color.Empty);
+
         public OfflineDataProvider()
         {
             ClefParser = new ClefParser();
@@ -44,10 +45,32 @@ namespace Analogy.LogViewer.Serilog.IAnalogy
                 LogManager.Instance);
 
         }
+
+        private void TrySetSerilogTimeStampTimeZoneAdjustment()
+        {
+            if (UserSettingsManager.UserSettings.Settings.UserTimeZone != string.Empty)
+            {
+                try
+                {
+                    var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(
+                        UserSettingsManager.UserSettings.Settings.UserTimeZone);
+                    ClefParser.TimeStampTimeZone = userTimeZone;
+                    JsonParser.TimeStampTimeZone = userTimeZone;
+                    RegexParser.TimeStampTimeZone = userTimeZone;
+                }
+                catch (Exception ex)
+                {
+                    // ignore
+                    // TODO: log
+                }
+            }
+        }
+
         public async Task<IEnumerable<AnalogyLogMessage>> Process(string fileName, CancellationToken token, ILogMessageCreatedHandler messagesHandler)
         {
             if (CanOpenFile(fileName))
             {
+                TrySetSerilogTimeStampTimeZoneAdjustment();
                 switch (UserSettingsManager.UserSettings.Settings.Format)
                 {
                     case SerilogFileFormat.CLEF:

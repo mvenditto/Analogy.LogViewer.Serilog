@@ -6,7 +6,6 @@ namespace Analogy.LogViewer.Serilog
 {
     public static class CommonParser
     {
-
         public static AnalogyLogMessage ParseLogEventProperties(LogEvent evt)
         {
             AnalogyLogMessage m = new AnalogyLogMessage();
