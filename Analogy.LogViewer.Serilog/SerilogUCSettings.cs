@@ -15,10 +15,13 @@ namespace Analogy.LogViewer.Serilog
     public partial class SerilogUCSettings : UserControl
     {
         private SerilogSettings Settings => UserSettingsManager.UserSettings.Settings;
+        private IReadOnlyCollection<TimeZoneInfo> _systemTimeZones;
+        
         public SerilogUCSettings()
         {
             InitializeComponent();
             InitPropertyColumnMappingsTable();
+            LoadSystemTimeZones();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -33,7 +36,13 @@ namespace Analogy.LogViewer.Serilog
                 propertyColumnMappingTable.Rows.Add(colPropPair.Key, colPropPair.Value);
             }
         }
-
+        
+        private void LoadSystemTimeZones()
+        {
+            _systemTimeZones =  TimeZoneInfo.GetSystemTimeZones();
+            timeZoneComboBox.DataSource = _systemTimeZones;
+        }
+        
         public void SaveSettings()
         {
 #if NETCOREAPP3_1
@@ -60,6 +69,7 @@ namespace Analogy.LogViewer.Serilog
                     Settings.PropertyColumnMappings.Add(col, prop);
                 }
             }
+            Settings.UserTimeZone = ((TimeZoneInfo)timeZoneComboBox.SelectedItem).Id;
             UserSettingsManager.UserSettings.Save();
         }
 
@@ -145,6 +155,13 @@ namespace Analogy.LogViewer.Serilog
                         propertyColumnMappingTable.Rows.Add(col, propDefault);
                     }
                 }
+            try
+            {
+                timeZoneComboBox.SelectedItem = TimeZoneInfo.FindSystemTimeZoneById(logSettings.UserTimeZone);
+            }
+            catch(Exception ex)
+            {
+                timeZoneComboBox.SelectedItem = null;
             }
         }
 

@@ -18,6 +18,7 @@ namespace Analogy.LogViewer.Serilog
         public string Directory { get; set; }
         public IDictionary<string,string> PropertyColumnMappings { get; set; }
         public SerilogFileFormat Format { get; set; }
+        public string UserTimeZone { get; set; }
 
         public SerilogSettings()
         {
@@ -28,6 +29,7 @@ namespace Analogy.LogViewer.Serilog
             RegexPatterns = new List<RegexPattern>();
             RegexPatterns.Add(new RegexPattern(@"\$(?<Date>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2},\d{3})+\|+(?<Thread>\d+)+\|(?<Level>\w+)+\|+(?<Source>.*)\|(?<Text>.*)", "yyyy-MM-dd HH:mm:ss,fff", ""));
             PropertyColumnMappings = null;
+            UserTimeZone = string.Empty;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Analogy.LogViewer.Serilog
     public static class CommonParser
     {
         public static IDictionary<string,string> PropertyColumnMappings { get; set; }
-
+   
         public static AnalogyLogMessage ParseLogEventProperties(LogEvent evt)
         {
             AnalogyLogMessage m = new AnalogyLogMessage();
