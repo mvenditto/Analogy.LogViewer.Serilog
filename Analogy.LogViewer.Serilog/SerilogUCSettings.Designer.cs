@@ -57,6 +57,10 @@
             this.lblDateTimeFormat = new System.Windows.Forms.Label();
             this.lblRegex = new System.Windows.Forms.Label();
             this.btnTest = new System.Windows.Forms.Button();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.propertyColumnMappingTable = new System.Windows.Forms.DataGridView();
+            this.column = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Property = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.txtbOpenFileFilters = new System.Windows.Forms.TextBox();
             this.lblOpenfilesFilters = new System.Windows.Forms.Label();
             this.btnTestFilter = new System.Windows.Forms.Button();
@@ -65,6 +69,8 @@
             this.tcSetttings.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.gbresult.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.propertyColumnMappingTable)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSave
@@ -195,6 +201,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tcSetttings.Controls.Add(this.tabPage2);
+            this.tcSetttings.Controls.Add(this.tabPage1);
             this.tcSetttings.Location = new System.Drawing.Point(6, 213);
             this.tcSetttings.Name = "tcSetttings";
             this.tcSetttings.SelectedIndex = 0;
@@ -219,6 +226,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 23);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(707, 385);
             this.tabPage2.Size = new System.Drawing.Size(707, 411);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Text file - Regular Expression Parser";
@@ -377,6 +385,42 @@
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.propertyColumnMappingTable);
+            this.tabPage1.Location = new System.Drawing.Point(4, 23);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(707, 385);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Property-Column mappings";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // propertyColumnMappingTable
+            // 
+            this.propertyColumnMappingTable.AllowUserToAddRows = false;
+            this.propertyColumnMappingTable.AllowUserToDeleteRows = false;
+            this.propertyColumnMappingTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.propertyColumnMappingTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.column,
+            this.Property});
+            this.propertyColumnMappingTable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyColumnMappingTable.Location = new System.Drawing.Point(3, 3);
+            this.propertyColumnMappingTable.Name = "propertyColumnMappingTable";
+            this.propertyColumnMappingTable.Size = new System.Drawing.Size(701, 379);
+            this.propertyColumnMappingTable.TabIndex = 0;
+            // 
+            // column
+            // 
+            this.column.HeaderText = "Column";
+            this.column.Name = "column";
+            this.column.ReadOnly = true;
+            // 
+            // Property
+            // 
+            this.Property.HeaderText = "Property";
+            this.Property.Name = "Property";
+            // 
             // txtbOpenFileFilters
             // 
             this.txtbOpenFileFilters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -453,6 +497,8 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.gbresult.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.propertyColumnMappingTable)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -491,6 +537,10 @@
         private System.Windows.Forms.TextBox txtbOpenFileFilters;
         private System.Windows.Forms.Label lblOpenfilesFilters;
         private System.Windows.Forms.Button btnTestFilter;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.DataGridView propertyColumnMappingTable;
+        private System.Windows.Forms.DataGridViewTextBoxColumn column;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Property;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox timeZoneComboBox;
     }

@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace Analogy.LogViewer.Serilog
 {
@@ -19,6 +20,7 @@ namespace Analogy.LogViewer.Serilog
         public SerilogUCSettings()
         {
             InitializeComponent();
+            InitPropertyColumnMappingsTable();
             LoadSystemTimeZones();
         }
 
@@ -27,11 +29,20 @@ namespace Analogy.LogViewer.Serilog
             SaveSettings();
         }
 
+        private void InitPropertyColumnMappingsTable()
+        {
+            foreach (var colPropPair in Constants.DefaultMappings)
+            {
+                propertyColumnMappingTable.Rows.Add(colPropPair.Key, colPropPair.Value);
+            }
+        }
+        
         private void LoadSystemTimeZones()
         {
             _systemTimeZones =  TimeZoneInfo.GetSystemTimeZones();
             timeZoneComboBox.DataSource = _systemTimeZones;
         }
+        
         public void SaveSettings()
         {
 #if NETCOREAPP3_1
@@ -47,6 +58,17 @@ namespace Analogy.LogViewer.Serilog
             Settings.Format = rbtnCLEF.Checked
                 ? SerilogFileFormat.CLEF
                 : (rbRegexFile.Checked ? SerilogFileFormat.REGEX : SerilogFileFormat.JSON);
+            Settings.PropertyColumnMappings = new Dictionary<string, string>();
+            foreach (DataGridViewRow row in propertyColumnMappingTable.Rows)
+            {
+                var col = row.Cells[0].Value.ToString();
+                var prop = row.Cells[1].Value.ToString();
+                // is well-known column
+                if (Constants.DefaultMappings.ContainsKey(col))
+                {
+                    Settings.PropertyColumnMappings.Add(col, prop);
+                }
+            }
             Settings.UserTimeZone = ((TimeZoneInfo)timeZoneComboBox.SelectedItem).Id;
             UserSettingsManager.UserSettings.Save();
         }
@@ -111,6 +133,28 @@ namespace Analogy.LogViewer.Serilog
             rbtnCLEF.Checked = logSettings.Format == SerilogFileFormat.CLEF;
             rbRegexFile.Checked = logSettings.Format == SerilogFileFormat.REGEX;
             rbJson.Checked = logSettings.Format == SerilogFileFormat.JSON;
+            if (logSettings.PropertyColumnMappings != null)
+            {
+                propertyColumnMappingTable.Rows.Clear();
+                // get mappings for each well-known column, ignore any other
+                foreach (var x in Constants.DefaultMappings)
+                {
+                    var col = x.Key;
+                    var propDefault = x.Value;
+                    if (logSettings.PropertyColumnMappings.TryGetValue(col, out var prop))
+                    {
+
+                        var addedRow = propertyColumnMappingTable.Rows.Add(col, prop);
+                        if (prop != propDefault)
+                        {
+                            propertyColumnMappingTable.Rows[addedRow].Cells[1].Style.ForeColor = Color.Blue;
+                        }
+                    }
+                    else
+                    {
+                        propertyColumnMappingTable.Rows.Add(col, propDefault);
+                    }
+                }
             try
             {
                 timeZoneComboBox.SelectedItem = TimeZoneInfo.FindSystemTimeZoneById(logSettings.UserTimeZone);
